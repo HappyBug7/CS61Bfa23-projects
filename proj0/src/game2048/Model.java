@@ -172,43 +172,29 @@ public class Model {
         board.setViewingPerspective(side);
         int size = board.size();
         boolean[][] isMergedMatrix = new boolean[size][size];
-        for (int i = 0; i < size; i++) {
-            for (int j = size-1; j>=0; j--) {
-                Tile currTile = board.tile(i,j);
+        for (int column = 0; column < size; column++) {
+            for (int row = size-2; row>=0; row--) {
+                Tile currTile = board.tile(column,row);
                 if (currTile==null) {
                     continue;
                 }
-                getNextPos(currTile, isMergedMatrix);
-                boolean isMerged = board.move(currTile.next().col(), currTile.next().row(), currTile);
-                if (isMerged) {
-                    this.score += 2 * currTile.value();
+                int nextRow = row;
+                while (nextRow < size-1 && board.tile(column,nextRow+1)==null) {
+                    nextRow++;
+                };
+                if (nextRow + 1 < size && board.tile(column, nextRow + 1).value() == currTile.value() && !isMergedMatrix[column][nextRow + 1]) {
+                    board.move(column, nextRow + 1, currTile);
+                    isMergedMatrix[column][nextRow + 1] = true;
+                    this.score += currTile.value() * 2;
+                } else if (nextRow != row) {
+                    board.move(column, nextRow, currTile);
                 }
-                isMergedMatrix[currTile.next().col()][currTile.next().row()]=isMerged;
             }
         }
         board.setViewingPerspective(Side.NORTH);
         checkGameOver();
         isMergedMatrix = null;
     }
-
-    public void getNextPos(Tile t, boolean[][] isMerged) {
-        int column = t.col();
-        int size = board.size();
-        for (int row = t.row()+1; row < size; row++) {
-            Tile tempTile = board.tile(column, row);
-            if (tempTile==null) {
-                continue;
-            }
-            if (isMerged[column][row] || t.value()!=tempTile.value()) {
-                tempTile = board.tile(column, row-1);
-            }
-            t.setNext(tempTile);
-            return;
-        }
-        Tile nextTile = board.tile(column, size-1);
-        t.setNext(nextTile);
-    }
-
 
     @Override
     public String toString() {
