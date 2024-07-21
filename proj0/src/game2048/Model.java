@@ -169,9 +169,44 @@ public class Model {
     public void tilt(Side side) {
         // TODO: Modify this.board (and if applicable, this.score) to account
         // for the tilt to the Side SIDE.
-
-
+        board.setViewingPerspective(side);
+        int size = board.size();
+        boolean[][] isMergedMatrix = new boolean[size][size];
+        for (int i = 0; i < size; i++) {
+            for (int j = size-1; j>=0; j--) {
+                Tile currTile = board.tile(i,j);
+                if (currTile==null) {
+                    continue;
+                }
+                getNextPos(currTile, isMergedMatrix);
+                boolean isMerged = board.move(currTile.next().col(), currTile.next().row(), currTile);
+                if (isMerged) {
+                    this.score += 2 * currTile.value();
+                }
+                isMergedMatrix[currTile.next().col()][currTile.next().row()]=isMerged;
+            }
+        }
+        board.setViewingPerspective(Side.NORTH);
         checkGameOver();
+        isMergedMatrix = null;
+    }
+
+    public void getNextPos(Tile t, boolean[][] isMerged) {
+        int column = t.col();
+        int size = board.size();
+        for (int row = t.row()+1; row < size; row++) {
+            Tile tempTile = board.tile(column, row);
+            if (tempTile==null) {
+                continue;
+            }
+            if (isMerged[column][row] || t.value()!=tempTile.value()) {
+                tempTile = board.tile(column, row-1);
+            }
+            t.setNext(tempTile);
+            return;
+        }
+        Tile nextTile = board.tile(column, size-1);
+        t.setNext(nextTile);
     }
 
 
