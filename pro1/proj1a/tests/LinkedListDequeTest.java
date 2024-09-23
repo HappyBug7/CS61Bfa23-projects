@@ -71,4 +71,40 @@ public class LinkedListDequeTest {
      }
 
     // Below, you'll write your own tests for LinkedListDeque.
+
+    @Test
+    /** This test, we call isEmpty for an empty list. */
+    public void isEmptyTestI() {
+        Deque<Integer> lld1 = new LinkedListDeque<>();
+        boolean result = lld1.isEmpty();
+        assertThat(result).isEqualTo(true);
+    }
+
+    @Test
+    /** This test, we call isEmpty for an unempty list. */
+    public void isEmptyTestII() {
+        Deque<Integer> lld1 = new LinkedListDeque<>();
+        lld1.addLast(0);
+        lld1.addLast(1);
+        boolean result = lld1.isEmpty();
+        assertThat(result).isEqualTo(false);
+    }
+
+    @Test
+    /** This test, we call size for an empty list. */
+    public void sizeTestI() {
+        Deque<Integer> lld1 = new LinkedListDeque<>();
+        int result = lld1.size();
+        assertThat(result).isEqualTo(0);
+    }
+
+    @Test
+    /** This test, we call size for an unempty list. */
+    public void sizeTestII() {
+        Deque<Integer> lld1 = new LinkedListDeque<>();
+        lld1.addLast(0);
+        lld1.addLast(1);
+        int result = lld1.size();
+        assertThat(result).isEqualTo(2);
+    }
 }
