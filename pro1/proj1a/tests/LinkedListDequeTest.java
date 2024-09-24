@@ -107,4 +107,36 @@ public class LinkedListDequeTest {
         int result = lld1.size();
         assertThat(result).isEqualTo(2);
     }
+
+    @Test
+    /** This test, we call removeFirst for an empty list. */
+    public void removeFirstTestI() {
+        Deque<Integer> lld1 = new LinkedListDeque<>();
+        assertThat(lld1.removeFirst()).isEqualTo(null);
+    }
+
+    @Test
+    /** This test, we call removeFirst for an unempty list. */
+    public void removeFirstTestII() {
+        Deque<Integer> lld1 = new LinkedListDeque<>();
+        lld1.addLast(0);
+        lld1.addLast(1);
+        assertThat(lld1.removeFirst()).isEqualTo(0);
+    }
+
+    @Test
+    /** This test, we call removeLast for an empty list. */
+    public void removeLastTestI() {
+        Deque<Integer> lld1 = new LinkedListDeque<>();
+        assertThat(lld1.removeLast()).isEqualTo(null);
+    }
+
+    @Test
+    /** This test, we call removeLast for an unempty list. */
+    public void removeLastTestII() {
+        Deque<Integer> lld1 = new LinkedListDeque<>();
+        lld1.addLast(0);
+        lld1.addLast(1);
+        assertThat(lld1.removeLast()).isEqualTo(1);
+    }
 }

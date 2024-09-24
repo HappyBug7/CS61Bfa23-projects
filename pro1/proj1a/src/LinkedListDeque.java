@@ -72,12 +72,24 @@ public class LinkedListDeque<T> implements Deque<T> {
 
     @Override
     public T removeFirst() {
-        return null;
+        if (isEmpty()) {
+            return null;
+        }
+        Node head = sentinel.next;
+        sentinel.next = head.next;
+        head.next.prev = sentinel;
+        return head.val;
     }
 
     @Override
     public T removeLast() {
-        return null;
+        if (isEmpty()) {
+            return null;
+        }
+        Node last = sentinel.prev;
+        last.prev.next = sentinel;
+        sentinel.prev = last.prev;
+        return last.val;
     }
 
     @Override
