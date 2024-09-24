@@ -73,76 +73,59 @@ public class LinkedListDequeTest {
     // Below, you'll write your own tests for LinkedListDeque.
 
     @Test
-    /** This test, we call isEmpty for an empty list. */
+    /** This test, we call isEmpty. */
     public void isEmptyTestI() {
         Deque<Integer> lld1 = new LinkedListDeque<>();
-        boolean result = lld1.isEmpty();
-        assertThat(result).isEqualTo(true);
-    }
+        assertThat(lld1.isEmpty()).isEqualTo(true);
 
-    @Test
-    /** This test, we call isEmpty for an unempty list. */
-    public void isEmptyTestII() {
-        Deque<Integer> lld1 = new LinkedListDeque<>();
         lld1.addLast(0);
         lld1.addLast(1);
-        boolean result = lld1.isEmpty();
-        assertThat(result).isEqualTo(false);
+        assertThat(lld1.isEmpty()).isEqualTo(false);
     }
 
     @Test
     /** This test, we call size for an empty list. */
     public void sizeTestI() {
         Deque<Integer> lld1 = new LinkedListDeque<>();
-        int result = lld1.size();
-        assertThat(result).isEqualTo(0);
+        assertThat(lld1.size()).isEqualTo(0);
+
+        lld1.addLast(0);
+        lld1.addLast(1);
+        assertThat(lld1.size()).isEqualTo(2);
     }
 
     @Test
     /** This test, we call size for an unempty list. */
     public void sizeTestII() {
         Deque<Integer> lld1 = new LinkedListDeque<>();
-        lld1.addLast(0);
-        lld1.addLast(1);
-        int result = lld1.size();
-        assertThat(result).isEqualTo(2);
+
     }
 
     @Test
-    /** This test, we call removeFirst for an empty list. */
-    public void removeFirstTestI() {
+    /** This test, we call removeFirst. */
+    public void removeFirstTest() {
         Deque<Integer> lld1 = new LinkedListDeque<>();
         assertThat(lld1.removeFirst()).isEqualTo(null);
-    }
 
-    @Test
-    /** This test, we call removeFirst for an unempty list. */
-    public void removeFirstTestII() {
-        Deque<Integer> lld1 = new LinkedListDeque<>();
         lld1.addLast(0);
         lld1.addLast(1);
         assertThat(lld1.removeFirst()).isEqualTo(0);
     }
 
     @Test
-    /** This test, we call removeLast for an empty list. */
-    public void removeLastTestI() {
+    /** This test, we call removeLast. */
+    public void removeLastTest() {
         Deque<Integer> lld1 = new LinkedListDeque<>();
         assertThat(lld1.removeLast()).isEqualTo(null);
-    }
 
-    @Test
-    /** This test, we call removeLast for an unempty list. */
-    public void removeLastTestII() {
-        Deque<Integer> lld1 = new LinkedListDeque<>();
         lld1.addLast(0);
         lld1.addLast(1);
         assertThat(lld1.removeLast()).isEqualTo(1);
     }
 
     @Test
-    /** This test, we call get using an invalid index. */
-    public void getTestI() {
+    /** This test, we call get */
+    public void getTest() {
         Deque<Integer> lld1 = new LinkedListDeque<>();
         lld1.addLast(0);
         lld1.addLast(1);
@@ -150,29 +133,8 @@ public class LinkedListDequeTest {
         lld1.addLast(3);
         lld1.addLast(4);
         assertThat(lld1.get(-1)).isEqualTo(null);
-    }
-
-    @Test
-    /** This test, we call get using an invalid index. */
-    public void getTestII() {
-        Deque<Integer> lld1 = new LinkedListDeque<>();
-        lld1.addLast(0);
-        lld1.addLast(1);
-        lld1.addLast(2);
-        lld1.addLast(3);
-        lld1.addLast(4);
         assertThat(lld1.get(6)).isEqualTo(null);
-    }
-
-    @Test
-    /** This test, we call get using an valid index. */
-    public void getTestIII() {
-        Deque<Integer> lld1 = new LinkedListDeque<>();
-        lld1.addLast(0);
-        lld1.addLast(1);
-        lld1.addLast(2);
-        lld1.addLast(3);
-        lld1.addLast(4);
         assertThat(lld1.get(3)).isEqualTo(3);
     }
+
 }
