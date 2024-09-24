@@ -139,4 +139,40 @@ public class LinkedListDequeTest {
         lld1.addLast(1);
         assertThat(lld1.removeLast()).isEqualTo(1);
     }
+
+    @Test
+    /** This test, we call get using an invalid index. */
+    public void getTestI() {
+        Deque<Integer> lld1 = new LinkedListDeque<>();
+        lld1.addLast(0);
+        lld1.addLast(1);
+        lld1.addLast(2);
+        lld1.addLast(3);
+        lld1.addLast(4);
+        assertThat(lld1.get(-1)).isEqualTo(null);
+    }
+
+    @Test
+    /** This test, we call get using an invalid index. */
+    public void getTestII() {
+        Deque<Integer> lld1 = new LinkedListDeque<>();
+        lld1.addLast(0);
+        lld1.addLast(1);
+        lld1.addLast(2);
+        lld1.addLast(3);
+        lld1.addLast(4);
+        assertThat(lld1.get(6)).isEqualTo(null);
+    }
+
+    @Test
+    /** This test, we call get using an valid index. */
+    public void getTestIII() {
+        Deque<Integer> lld1 = new LinkedListDeque<>();
+        lld1.addLast(0);
+        lld1.addLast(1);
+        lld1.addLast(2);
+        lld1.addLast(3);
+        lld1.addLast(4);
+        assertThat(lld1.get(3)).isEqualTo(3);
+    }
 }
