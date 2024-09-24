@@ -18,21 +18,39 @@ public class ArrayDeque<T> implements Deque<T> {
     }
 
     private void resize(int capacity_new) {
-        T[] items_new = (T[]) new Object[capacity_new];
-        int i = start;
-        int j = 0;
-        for (;j < capacity;j++) {
-            items_new[j] = items[i];
-            if (i==capacity-1) {
-                i=0;
-            } else {
-                i++;
+        if (capacity_new > capacity) {
+            T[] items_new = (T[]) new Object[capacity_new];
+            int i = start;
+            int j = 0;
+            for (;j < capacity; j++) {
+                items_new[j] = items[i];
+                if (i==capacity-1) {
+                    i=0;
+                } else {
+                    i++;
+                }
             }
+            start = 0;
+            end = capacity-1;
+            capacity = capacity_new;
+            items = items_new;
+        } else {
+            T[] items_new = (T[]) new Object[capacity_new];
+            int i = start;
+            int j = 0;
+            for (;j < size; j++) {
+                items_new[j] = items[i];
+                if (i==capacity-1) {
+                    i=0;
+                } else {
+                    i++;
+                }
+            }
+            start = 0;
+            end = size-1;
+            capacity = capacity_new;
+            items = items_new;
         }
-        start = 0;
-        end = capacity-1;
-        capacity = capacity_new;
-        items = items_new;
     }
 
     @Override
@@ -97,6 +115,9 @@ public class ArrayDeque<T> implements Deque<T> {
         if (size == 0) {
             return null;
         }
+        if (size <= capacity * 0.25) {
+            resize(capacity / 4);
+        }
         int index = start;
         if (start == capacity - 1) {
             start = 0;
@@ -112,6 +133,9 @@ public class ArrayDeque<T> implements Deque<T> {
         if (size == 0) {
             return null;
         }
+        if (size <= capacity * 0.25) {
+            resize(capacity / 4);
+        }
         int index = end;
         if (end == 0) {
             end = capacity-1;
@@ -124,11 +148,15 @@ public class ArrayDeque<T> implements Deque<T> {
 
     @Override
     public T get(int index) {
-        return null;
+        if (index >= size) {
+            return null;
+        }
+        int index_real = (start + index) % capacity;
+        return items[index_real];
     }
 
     @Override
     public T getRecursive(int index) {
-        return null;
+        throw new UnsupportedOperationException("No need to implement getRecursive for proj 1b");
     }
 }

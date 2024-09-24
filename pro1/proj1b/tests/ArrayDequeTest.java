@@ -135,6 +135,11 @@ public class ArrayDequeTest {
          assertThat(alist.removeFirst()).isEqualTo(5);
          assertThat(alist.removeFirst()).isEqualTo(4);
          assertThat(alist.removeFirst()).isEqualTo(3);
+         alist.removeFirst();
+         alist.removeFirst();
+         alist.removeFirst();
+         alist.removeFirst();
+         assertThat(alist.toList()).containsExactly(2, 6, 8, 10).inOrder();
      }
 
     @Test
@@ -156,6 +161,33 @@ public class ArrayDequeTest {
         assertThat(alist.removeLast()).isEqualTo(6);
         assertThat(alist.removeLast()).isEqualTo(2);
         assertThat(alist.removeLast()).isEqualTo(1);
+    }
+
+    @Test
+    void getTest() {
+        ArrayDeque<Integer> alist = new ArrayDeque<>();
+        alist.addLast(1);
+        alist.addLast(2);
+        alist.addFirst(3);
+        alist.addFirst(4);
+        alist.addFirst(5);
+        alist.addLast(6);
+        alist.addFirst(7);
+        alist.addLast(8);
+        alist.addFirst(9);
+        alist.addLast(10);
+        assertThat(alist.get(0)).isEqualTo(9);
+        assertThat(alist.get(1)).isEqualTo(7);
+        assertThat(alist.get(2)).isEqualTo(5);
+        assertThat(alist.get(3)).isEqualTo(4);
+        assertThat(alist.get(4)).isEqualTo(3);
+        assertThat(alist.get(5)).isEqualTo(1);
+        assertThat(alist.get(6)).isEqualTo(2);
+        assertThat(alist.get(7)).isEqualTo(6);
+        assertThat(alist.get(8)).isEqualTo(8);
+        assertThat(alist.get(9)).isEqualTo(10);
+        assertThat(alist.get(10)).isEqualTo(null);
+        assertThat(alist.get(11)).isEqualTo(null);
     }
 
 }
