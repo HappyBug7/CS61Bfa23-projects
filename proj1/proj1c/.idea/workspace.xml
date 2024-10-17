@@ -5,11 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c6e9b5c5-51f0-4126-9c35-f39e273649b5" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/deque/MaxArrayDeque.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/deque/MaxArrayDequeComparator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,7 +47,7 @@
     "go.import.settings.migrated": "true",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "D:/Coding/csdiy/HappyBug's Journey/CS61b-fa23/proj1c",
+    "last_opened_file_path": "D:/Coding/csdiy/HappyBug's Journey/scripts/CS61B/hws/hw2",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -63,7 +59,7 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RunManager" selected="JUnit.TestGuitarString.testPluckTheAString">
+  <component name="RunManager" selected="Application.GuitarHeroLite">
     <configuration name="GuitarHeroLite" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="gh2.GuitarHeroLite" />
       <module name="proj1c" />
@@ -118,8 +114,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.TestGuitarString.testPluckTheAString" />
         <item itemvalue="Application.GuitarHeroLite" />
+        <item itemvalue="JUnit.TestGuitarString.testPluckTheAString" />
         <item itemvalue="JUnit.TestGuitarString" />
         <item itemvalue="JUnit.TestGuitarString.testSample" />
         <item itemvalue="JUnit.MaxArrayDequeTest.toStringTest" />
@@ -145,6 +141,9 @@
       <workItem from="1727600532402" duration="56000" />
       <workItem from="1727600617020" duration="52000" />
       <workItem from="1727600694616" duration="7533000" />
+      <workItem from="1727617780799" duration="1326000" />
+      <workItem from="1727792857029" duration="96000" />
+      <workItem from="1728032144805" duration="58000" />
     </task>
     <servers />
   </component>
