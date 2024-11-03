@@ -1,10 +1,5 @@
 package core;
 
-import edu.princeton.cs.algs4.StdDraw;
-import tileengine.TERenderer;
-
-import java.awt.*;
-
 public class Main {
     public static void main(String[] args) {
 
@@ -14,8 +9,7 @@ public class Main {
         int SEED = 114514;
 //        int SEED = 1919810;
 //        int SEED = 24;
-        World world = new World(WIDTH, HEIGHT, SEED);
+        World world = new World(WIDTH, HEIGHT);
         world.play();
-
     }
 }

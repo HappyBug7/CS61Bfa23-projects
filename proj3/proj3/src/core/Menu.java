@@ -5,80 +5,81 @@ import edu.princeton.cs.algs4.StdDraw;
 import java.awt.*;
 import java.awt.event.HierarchyBoundsAdapter;
 import java.awt.event.KeyEvent;
+import java.util.Random;
 
 public class Menu {
     private final String[] OPTIONS;
+    private final char[][] OPTION_KEYS;
     private final String TITLE;
     private final int WIDTH;
     private final int HEIGHT;
     private final int TITLE_FONT_SIZE;
     private final int OPTIONS_FONT_SIZE;
-    public Menu(int width, int height, String[] options, String title) {
+    private final int MARGIN;
+    public Menu(int width, int height, String[] options, String title, char[][] optionKeys) {
         WIDTH = width;
         HEIGHT = height;
+        TITLE = title;
+        OPTIONS = options;
+        OPTION_KEYS = optionKeys;
         TITLE_FONT_SIZE = 50;
         OPTIONS_FONT_SIZE = 20;
-        OPTIONS = options;
-        TITLE = title;
+        MARGIN = 20;
     }
-    public int show() {
-        // Initialize
+    public void init() {
         StdDraw.setCanvasSize(WIDTH, HEIGHT);
         StdDraw.setXscale(0, WIDTH);
         StdDraw.setYscale(0, HEIGHT);
-        StdDraw.clear(new Color(0, 0, 0));
-        Font titleFont = new Font("Comic Sans MS", Font.BOLD, TITLE_FONT_SIZE);
-        Font optionFont = new Font("Comic Sans MS", Font.BOLD, OPTIONS_FONT_SIZE);
-        StdDraw.setPenColor(new Color(255, 255, 255));
-
-        // Centering the contents
-        int MARGIN = 20;
-        int contentHeight = TITLE_FONT_SIZE + OPTIONS.length * ( MARGIN + OPTIONS_FONT_SIZE );
-        int spaceLeft = HEIGHT - contentHeight;
-        double[] yPositions = new double[OPTIONS.length + 1];
-        yPositions[0] = HEIGHT - spaceLeft/2.0;
-        yPositions[1] = yPositions[0] - MARGIN - TITLE_FONT_SIZE;
-        for (int i = 1; i < OPTIONS.length; i++) {
-            yPositions[i + 1] = yPositions[i] - MARGIN - OPTIONS_FONT_SIZE;
-        }
-
-        // Start drawing
-        StdDraw.setFont(titleFont);
-        StdDraw.text(WIDTH / 2.0, yPositions[0], TITLE);
+    }
+    public int show() {
+        Display display = new Display(WIDTH, HEIGHT);
+        Display.Element title = new Display.Element(TITLE_FONT_SIZE, MARGIN, TITLE);
+        Display.Element[] options = new Display.Element[OPTIONS.length];
         for (int i = 0; i < OPTIONS.length; i++) {
-            StdDraw.setFont(optionFont);
-            StdDraw.text(WIDTH / 2.0, yPositions[i + 1], OPTIONS[i]);
+            options[i] = new Display.Element(OPTIONS_FONT_SIZE, MARGIN, OPTIONS[i]);
         }
-        StdDraw.show();
+        return display.makeOption(title, options, OPTION_KEYS);
+    }
 
-        // Intercept mouse event
-        double mousePositionX = StdDraw.mouseX();
-        double mousePositionY = StdDraw.mouseY();
-        while (!StdDraw.isMousePressed()&&!StdDraw.hasNextKeyTyped()) {
-            mousePositionX = StdDraw.mouseX();
-            mousePositionY = StdDraw.mouseY();
-        }
-        int Option = 0;
-        if (StdDraw.hasNextKeyTyped()) {
-            char keyPressed = StdDraw.nextKeyTyped();
-            if (keyPressed == 'N' || keyPressed == 'n') {
-                Option = 1;
+    public int getSeed() {
+        Display display = new Display(WIDTH, HEIGHT);
+        Display.Element[] elements = new Display.Element[3];
+        elements[0] = new Display.Element(30, MARGIN, "Enter the seed u want (leave blank for random seed)");
+        elements[1] = new Display.Element(20, MARGIN, "");
+        elements[2] = new Display.Element(30, MARGIN, "OK");
+        display.columnCenterDisplay(elements);
+        double[] positions = display.getPosition(elements);
+        while (true) {
+            double mouseX = StdDraw.mouseX();
+            double mouseY = StdDraw.mouseY();
+            while (!StdDraw.isMousePressed()) {
+                mouseX = StdDraw.mouseX();
+                mouseY = StdDraw.mouseY();
+                while (StdDraw.hasNextKeyTyped()) {
+                    char c = StdDraw.nextKeyTyped();
+                    if (c != '\n') {
+                        elements[1].content += c;
+                        display.columnCenterDisplay(elements);
+                    } else {
+                        if (!elements[1].content.isEmpty()) {
+                            return Integer.parseInt(elements[1].content);
+                        } else {
+                            Random rand = new Random();
+                            return rand.nextInt(Integer.MAX_VALUE);
+                        }
+                    }
+                }
             }
-            if (keyPressed == 'N' || keyPressed == 'l') {
-                Option = 2;
-            }
-            if (keyPressed == 'Q' || keyPressed == 'q') {
-                Option = 3;
-            }
-        } else {
-            for (int i = 0; i < OPTIONS.length; i++) {
-                double widthTolerance =  OPTIONS[i].length() * OPTIONS_FONT_SIZE * 0.5;
-                if (mousePositionY >= yPositions[i + 1] - OPTIONS_FONT_SIZE / 2.0 && mousePositionY <= yPositions[i + 1] + OPTIONS_FONT_SIZE / 2.0 && mousePositionX >= WIDTH / 2.0 - widthTolerance && mousePositionX <= WIDTH / 2.0 + widthTolerance) {
-                    Option = i + 1;
-                    break;
+            if (mouseY >= positions[2] - elements[2].fontSize/2.0 - elements[2].margin && mouseY <= positions[2] + elements[2].fontSize/2.0 + elements[2].margin) {
+                if (mouseX >= WIDTH/2.0 - elements[2].content.length() * elements[2].fontSize * 0.5 && mouseX <= WIDTH/2.0 + elements[2].content.length() * elements[2].fontSize * 0.5) {
+                    if (!elements[1].content.isEmpty()) {
+                        return Integer.parseInt(elements[1].content);
+                    } else {
+                        Random rand = new Random();
+                        return rand.nextInt(Integer.MAX_VALUE);
+                    }
                 }
             }
         }
-        return Option;
     }
 }

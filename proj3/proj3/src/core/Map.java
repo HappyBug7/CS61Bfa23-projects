@@ -1,6 +1,9 @@
 package core;
 
 import edu.princeton.cs.algs4.In;
+import edu.princeton.cs.algs4.StdDraw;
+import org.apache.logging.log4j.core.appender.rolling.action.IfAll;
+import tileengine.TERenderer;
 import tileengine.TETile;
 import tileengine.Tileset;
 
@@ -9,7 +12,9 @@ import java.util.Random;
 
 public class Map {
 
-    private TETile[][] map;
+    private final TETile[][] map;
+    private final TETile[][] scene;
+    private final boolean[][] accessibility;
     private final int WIDTH;
     private final int HEIGHT;
     private final long SEED;
@@ -22,6 +27,9 @@ public class Map {
     private int MAX_ROOM_NUM;
     private ArrayList<Room> rooms;
     private ArrayList<Tuple<Room>> edges;
+    private int bugPositionX;
+    private int bugPositionY;
+    private TETile bugTile = new TETile('B', StdDraw.WHITE, StdDraw.BLACK, "you, HappyBug!", "./assets/HappyBug_creeping.png");
 
     public Map(int width, int height, long seed) {
         WIDTH = width;
@@ -29,6 +37,8 @@ public class Map {
         SEED = seed;
         RANDOM = new Random(SEED);
         map = new TETile[WIDTH][HEIGHT];
+        scene = new TETile[WIDTH][HEIGHT];
+        accessibility = new boolean[WIDTH][HEIGHT];
         rooms = new ArrayList<>();
         edges = new ArrayList<>();
         MAX_ROOM_NUM =  (int)(CROWDED_FACTOR * WIDTH * HEIGHT / ((double) ((MAX_ROOM_SIZE_HEIGHT + MIN_ROOM_SIZE_HEIGHT) / 2) * (double) ((MAX_ROOM_SIZE_WIDTH + MIN_ROOM_SIZE_WIDTH) / 2)));
@@ -36,6 +46,7 @@ public class Map {
         generateRandomRoomHandler();
         generateEdges();
         generateHallWay();
+        putBug();
     }
 
     static class Tuple<T> {
@@ -71,12 +82,21 @@ public class Map {
         for (int x = 0; x < WIDTH; x++) {
             for (int y = 0; y < HEIGHT; y++) {
                 map[x][y] = Tileset.NOTHING;
+                scene[x][y] = Tileset.NOTHING;
+                accessibility[x][y] = false;
             }
         }
     }
 
-    public TETile[][] getMap() {
-        return map;
+    public TETile[][] getScene() {
+        return scene;
+    }
+
+    public TETile getTile(int x, int y) {
+        if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT) {
+            return null;
+        }
+        return scene[x][y];
     }
 
     private void generateRoom(Tuple<Integer> position, int width, int height) {
@@ -167,8 +187,12 @@ public class Map {
                 int y = j;
                 if (x > xMin && x < xMax && y > yMin && y < yMax) {
                     map[x][y] = Tileset.FLOOR;
+                    scene[x][y] = Tileset.FLOOR;
+                    accessibility[x][y] = true;
                 } else {
                     map[x][y] = Tileset.WALL;
+                    scene[x][y] = Tileset.WALL;
+                    accessibility[x][y] = false;
                 }
             }
         }
@@ -176,11 +200,13 @@ public class Map {
         rooms.add(newRoom);
     }
 
-    private void setTile(int x, int y, TETile tile) {
+    private void setTile(int x, int y, TETile tile, boolean accessible) {
         if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT) {
             return;
         }
         map[x][y] = tile;
+        scene[x][y] = tile;
+        accessibility[x][y] = accessible;
     }
 
     private void generateRandomRoomHandler() {
@@ -258,8 +284,9 @@ public class Map {
                 for (int i = 0; Math.abs(i) <= Math.abs(deltaX); i -= deltaX / Math.abs(deltaX)) {
                     Tuple<Integer> pos = new Tuple<>(room1.x + i, room1.y);
                     if (!isInRoom(pos)) {
-                        setTile(room1.x + i, room1.y - 1, Tileset.WALL);
-                        setTile(room1.x + i, room1.y + 1, Tileset.WALL);
+                        setTile(room1.x + i, room1.y - 1, Tileset.WALL, false);
+
+                        setTile(room1.x + i, room1.y + 1, Tileset.WALL, false);
                     }
                 }
             }
@@ -267,17 +294,17 @@ public class Map {
                 for (int i = 0; Math.abs(i) <= Math.abs(deltaY); i += deltaY / Math.abs(deltaY)) {
                     Tuple<Integer> pos = new Tuple<>(room2.x, room2.y + i);
                     if (!isInRoom(pos)) {
-                        setTile(room2.x + 1, room2.y + i, Tileset.WALL);
-                        setTile(room2.x - 1, room2.y + i, Tileset.WALL);
+                        setTile(room2.x + 1, room2.y + i, Tileset.WALL, false);
+                        setTile(room2.x - 1, room2.y + i, Tileset.WALL, false);
                     }
                 }
             }
             Tuple<Integer> pos = new Tuple<>(room2.x, room1.y);
             if (!isInRoom(pos)) {
-                setTile(room2.x + 1, room1.y + 1, Tileset.WALL);
-                setTile(room2.x - 1, room1.y + 1, Tileset.WALL);
-                setTile(room2.x + 1, room1.y - 1, Tileset.WALL);
-                setTile(room2.x - 1, room1.y - 1, Tileset.WALL);
+                setTile(room2.x + 1, room1.y + 1, Tileset.WALL, false);
+                setTile(room2.x - 1, room1.y + 1, Tileset.WALL, false);
+                setTile(room2.x + 1, room1.y - 1, Tileset.WALL, false);
+                setTile(room2.x - 1, room1.y - 1, Tileset.WALL, false);
             }
         }
         // then: dig hole
@@ -289,14 +316,55 @@ public class Map {
             // then: dig hole
             if (deltaX != 0) {
                 for (int i = 0; Math.abs(i) <= Math.abs(deltaX); i -= deltaX / Math.abs(deltaX)) {
-                    setTile(room1.x + i, room1.y, Tileset.FLOOR);
+                    setTile(room1.x + i, room1.y, Tileset.FLOOR, true);
                 }
             }
             if (deltaY != 0) {
                 for (int i = 0; Math.abs(i) <= Math.abs(deltaY); i += deltaY / Math.abs(deltaY)) {
-                    setTile(room2.x, room2.y + i, Tileset.FLOOR);
+                    setTile(room2.x, room2.y + i, Tileset.FLOOR, true);
                 }
             }
+        }
+    }
+
+    private void putBug() {
+        bugPositionX = rooms.get(0).x;
+        bugPositionY = rooms.get(0).y;
+        scene[bugPositionX][bugPositionY] = bugTile;
+    }
+
+    public void moveBug(char command) {
+        if (command == 'w' || command == 'W') {
+            if (bugPositionY + 1 >= HEIGHT || !accessibility[bugPositionX][bugPositionY+1]) {
+                return;
+            }
+            scene[bugPositionX][bugPositionY] = map[bugPositionX][bugPositionY];
+            bugPositionY++;
+            scene[bugPositionX][bugPositionY] = bugTile;
+        }
+        if (command == 's' || command == 'S') {
+            if (bugPositionY - 1 < 0 || !accessibility[bugPositionX][bugPositionY-1]) {
+                return;
+            }
+            scene[bugPositionX][bugPositionY] = map[bugPositionX][bugPositionY];
+            bugPositionY--;
+            scene[bugPositionX][bugPositionY] = bugTile;
+        }
+        if (command == 'a' || command == 'A') {
+            if (bugPositionX - 1 < 0 || !accessibility[bugPositionX - 1][bugPositionY]) {
+                return;
+            }
+            scene[bugPositionX][bugPositionY] = map[bugPositionX][bugPositionY];
+            bugPositionX--;
+            scene[bugPositionX][bugPositionY] = bugTile;
+        }
+        if (command == 'd' || command == 'D') {
+            if (bugPositionX + 1 >= WIDTH || !accessibility[bugPositionX + 1][bugPositionY]) {
+                return;
+            }
+            scene[bugPositionX][bugPositionY] = map[bugPositionX][bugPositionY];
+            bugPositionX++;
+            scene[bugPositionX][bugPositionY] = bugTile;
         }
     }
 }
